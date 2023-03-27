@@ -6,7 +6,8 @@ mips2riscvはVLSI講義資料のMIPSプロセッサをRISC-Vに書き換えバ�
 
 ### ディレクトリ構成
 ディレクトリの構成は以下の通りです。
-.
+
+```.
 ├── README.md
 ├── img
 │   └── cpu_project_structure.png
@@ -36,7 +37,7 @@ mips2riscvはVLSI講義資料のMIPSプロセッサをRISC-Vに書き換えバ�
     ├── pc_selector.v
     ├── program_counter.v
     ├── register_file.v
-    └── risc_v_cpu.v
+    └── risc_v_cpu.v```
 
 ![回路図](img/cpu_project_structure.png)
 
