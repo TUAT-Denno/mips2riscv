@@ -3,7 +3,7 @@
 
 ## 紹介文
 〜〜〜〜〜〜〜。
-回路図挿入
+![回路図](img/cpu_project_structure.png)
 
 ## サポートする命令
 
