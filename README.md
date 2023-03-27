@@ -41,6 +41,9 @@ mips2riscvはVLSI講義資料のMIPSプロセッサをRISC-Vに書き換えバ�
     └── risc_v_cpu.v
 ```
 
+### 回路図
+FETCH → DECODE → EXECUTE → MemAccess → WriteBackの流れがわかりやすくなるように改良しました。
+
 ![回路図](img/cpu_project_structure.png)
 
 ## サポートする命令
