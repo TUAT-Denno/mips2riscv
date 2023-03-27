@@ -68,6 +68,8 @@ FETCH → DECODE → EXECUTE → MemAccess → WriteBackの流れがわかりや
 
 
 ## 仕様
+### 各命令の状態遷移
+![状態遷移](img/state_trans.png)
 ### PC
 * pcSRC
     * PC+4（特に条件なし）
