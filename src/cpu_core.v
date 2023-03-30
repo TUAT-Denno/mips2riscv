@@ -24,7 +24,8 @@ module cpu_core(
     input CLK, RES,
     input [31:0] memDataOut,
     output memRead, memWrite,
-    output [31:0] memAddr, memDataIn
+    output [31:0] memAddr, memDataIn,
+    output [31:0] check
 );
 
 
@@ -91,7 +92,8 @@ register_file registerFile(
     .write(regWrite),
     .dataIn(regDataIn),
     .dataOut1(regA),
-    .dataOut2(regB)
+    .dataOut2(regB),
+    .check(check)
 );
 
 wire [31:0] regA, regB;
@@ -112,8 +114,7 @@ control_unit controlUnit(
     .memToReg(memToReg),
     .isFetch(isFetch),
     .isJump(isJump),
-    .isBranch(isBranch),
-    .reversedZFlag(reversedZFlag)
+    .isBranch(isBranch)
 );
 
 wire instWrite;
@@ -121,22 +122,24 @@ wire [3:0] instType;
 wire regWrite, aluSrcA;
 wire [1:0] aluSrcB;
 wire memRead, memWrite, memToReg;
-wire isFetch, isJump, isBranch, reversedZFlag;
+wire isFetch, isJump, isBranch;
 wire pcSrc, pcWrite;
-
-
-assign pcSrc = ( zeroFlag ^ reversedZFlag) & isBranch | isJump;
-assign pcWrite = pcSrc | isFetch;
 
 
 alu_controller aluController(
     .instType(instType),
     .func3(inst14_12),
     .func7(inst31_25),
-    .aluControl(aluControl)
+    .aluControl(aluControl),
+    .reversedZFlag(reversedZFlag)
 );
 
 wire [3:0] aluControl;
+wire reversedZFlag;
+
+
+assign pcSrc = ( zeroFlag ^ reversedZFlag) & isBranch | isJump;
+assign pcWrite = pcSrc | isFetch;
 
 
 ////////DE_REGISTER////////
@@ -197,7 +200,9 @@ wire zeroFlag, overflow;
 
 pc_adder pcAdder(
     .PC(PCWireDe),
+    .regA(regAWireDe),
     .imm(immWireDe),
+    .instType(instType),
     .targetAddr(targetAddr)
 );
 
@@ -205,19 +210,15 @@ wire [31:0] targetAddr;
 
 
 ////////EM_REGISTER////////
-reg [31:0] PCRegEm;
-reg [31:0] aluOutRegEm, memDataInRegEm;
-wire [31:0] PCWireEm;
+reg [31:0] aluOutRegEm, memataInRegEm;
 wire [31:0] aluOutWireEm;
 
 
 always @(posedge CLK) begin
-    PCRegEm <= PCWireDe;
     aluOutRegEm <= aluOut;
     memDataInRegEm <= regBWireDe;
 end
 
-assign PCWireEm = PCRegEm;
 assign aluOutWireEm = aluOutRegEm;
 assign memDataIn = memDataInRegEm;  //output memDataIn
 ///////////////////////////
@@ -240,8 +241,5 @@ wire [31:0] mdrDataOut;
 wire [31:0] regDataIn;
 
 
-assign regDataIn = (memToReg == 2'b00) ? aluOutWireEm :
-                   (memToReg == 2'b01) ? mdrDataOut :
-                   (memToReg == 2'b10) ? PCWireEm :
-                   32'h0;
+assign regDataIn = (memToReg == 1'b0) ? aluOutWireEm : mdrDataOut;
 endmodule

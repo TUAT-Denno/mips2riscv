@@ -27,13 +27,16 @@ module alu_controller(
     input [3:0] instType,
     input [2:0] func3,
     input [6:0] func7,
-    output reg [3:0] aluControl
+    output reg [3:0] aluControl,
+    output reg reversedZFlag
 );
 
 
 always @(instType or func3 or func7) begin//WARNING
     case(instType)
-        INST_R_TYPE, INST_I_TYPE_CALC : begin
+        `INST_R_TYPE, `INST_I_TYPE_CALC : begin
+            reversedZFlag <= 1'b0;
+        
             case(func3)
                 3'b000 :
                     aluControl <= (instType == INST_R_TYPE && func7[5] == 1'b1) ? SUB : ADD;
@@ -61,7 +64,28 @@ always @(instType or func3 or func7) begin//WARNING
             endcase
         end
         
+        `INST_I_TYPE_JALR, `INST_LOAD, `INST_STORE, `INST_J_TYPE : begin
+            reversedZFlag <= 1'b0;
         
+            aluControl <= ADD;
+        end
+        
+        `INST_B_TYPE : begin
+            case(func3)
+                3'b000 : begin
+                    reversedZFlag <= 1'b0;
+                    aluCon <= SUB;
+                end
+                
+                3'b001 : begin
+                    reversedZFlag <= 1'b1;
+                    aluCon <= SUB;
+                end
+                
+                default :
+                    aluControl <= 4'b0000;
+            endcase
+        end
         
         default :
             aluControl <= 4'b0000;

@@ -29,4 +29,9 @@ reg [7:0] instMem [511:0];  //命令メモリ
 
 
 assign inst = {instMem[PC], instMem[PC+1], instMem[PC+2], instMem[PC+3]};
+
+
+//デバッグ用
+assign {instMem[0], instMem[1], instMem[2], instMem[3]} = 32'b000000000001000000000000010000010011;
+assign {instMem[4], instMem[5], instMem[6], instMem[7]} = 32'b000000000010000000000000010010010011;
 endmodule

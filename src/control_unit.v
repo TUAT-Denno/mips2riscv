@@ -39,7 +39,7 @@ module control_unit(
     output reg regWrite, aluSrcA,
     output reg [1:0] aluSrcB,
     output reg memRead, memWrite, memToReg,
-    output reg isFetch, isJump, isBranch, reversedZFlag
+    output reg isFetch, isJump, isBranch
 );
 
 reg [2:0] stateReg, nextState;
@@ -63,10 +63,10 @@ always @(stateReg or opcode) begin  //状態遷移
             
         EXECUTE : begin
             case(opcode)
-                OP_R_TYPE, OP_I_TYPE_CALC, OP_I_TYPE_JALR :
+                `OP_R_TYPE, `OP_I_TYPE_CALC, `OP_I_TYPE_JALR, `OP_J_TYPE :
                     nextState <= WRITEBACK;
             
-                OP_B_TYPE, OP_J_TYPE :
+                `OP_B_TYPE :
                     nextState <= FETCH;
                     
                 default :
@@ -76,7 +76,7 @@ always @(stateReg or opcode) begin  //状態遷移
         
         MEM_ACCESS : begin
             case(opcode)
-                OP_STORE :
+                `OP_STORE :
                     nextState <= FETCH;
                     
                 default :
@@ -98,11 +98,10 @@ always @(stateReg or opcode) begin  //状態に応じた信号の切り替え//WARNING
     aluSrcB <= 2'b0;
     memRead <= 1'b0;
     memWrite <= 1'b0;
-    memToReg <= 2'b0;
+    memToReg <= 1'b0;
     isFetch <= 1'b0;
     isJump <= 1'b0;
     isBranch <= 1'b0;
-    reversedZFlag <= 1'b0;
     
     case(stateReg)
         FETCH : begin
@@ -115,35 +114,42 @@ always @(stateReg or opcode) begin  //状態に応じた信号の切り替え//WARNING
         
         EXECUTE : begin
             case(opcode)
-                OP_R_TYPE : begin
+                `OP_R_TYPE : begin
                     instType <= INST_R_TYPE;
                 end
                 
-                OP_I_TYPE_CALC : begin
+                `OP_I_TYPE_CALC : begin
                     instType <= INST_I_TYPE_CALC;
                     aluSrcB <= 2'b01;
                 end
                 
-                OP_I_TYPE_JALR : begin
+                `OP_I_TYPE_JALR : begin
                     instType <= INST_I_TYPE_JALR;
                     aluSrcA <= 1'b1;
                     aluSrcB <= 2'b10;
+                    isJump <= 1'b1;
                 end
                 
-                OP_LOAD : begin
+                `OP_LOAD : begin
                     instType <= INST_LOAD;
+                    aluSrcB <= 2'b01;
                 end
                 
-                OP_STORE : begin
+                `OP_STORE : begin
                     instType <= INST_STORE;
+                    aluSrcB <= 2'b01;
                 end
                 
-                OP_B_TYPE : begin
+                `OP_B_TYPE : begin
                     instType <= INST_B_TYPE;
+                    isBranch <= 1'b1;
                 end
                 
-                OP_J_TYPE : begin
+                `OP_J_TYPE : begin
                     instType <= INST_J_TYPE;
+                    aluSrcA <= 1'b1;
+                    aluSrcB <= 2'b10;
+                    isJump <= 1'b1;
                 end
                 
                 default : begin
@@ -154,10 +160,12 @@ always @(stateReg or opcode) begin  //状態に応じた信号の切り替え//WARNING
         
         MEM_ACCESS : begin
             case(opcode)
-                OP_LOAD: begin
+                `OP_LOAD: begin
+                    memRead <= 1'b1;
                 end
                 
-                OP_STORE: begin
+                `OP_STORE: begin
+                    memWrite <= 1'b1;
                 end
 
                 default: begin
@@ -167,19 +175,13 @@ always @(stateReg or opcode) begin  //状態に応じた信号の切り替え//WARNING
         
         WRITEBACK : begin
             case(opcode)
-                OP_R_TYPE : begin
+                `OP_R_TYPE, `OP_I_TYPE_CALC, `OP_I_TYPE_JALR, `OP_J_TYPE : begin
+                    regWrite <= 1'b1;
                 end
                 
-                OP_I_TYPE_CALC : begin
-                end
-                
-                OP_I_TYPE_JALR : begin
-                end
-                
-                OP_LOAD : begin
-                end
-                
-                OP_J_TYPE : begin
+                `OP_LOAD : begin
+                    regWrite <= 1'b1;
+                    memToReg <= 1'b1;
                 end
                 
                 default : begin

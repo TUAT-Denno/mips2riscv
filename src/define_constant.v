@@ -24,13 +24,13 @@
 `define __DEFINE_CONSTANT__
 
 
-`define OP_R_TYPE 7'b0110011;
-`define OP_I_TYPE_CALC 7'b0010011;
-`define OP_I_TYPE_JALR 7'b1100111;
-`define OP_LOAD 7'b0000011;
-`define OP_STORE 7'b0100011;
-`define OP_B_TYPE 7'b1100011;
-`define OP_J_TYPE 7'b1101111;
+`define OP_R_TYPE 7'b0110011
+`define OP_I_TYPE_CALC 7'b0010011
+`define OP_I_TYPE_JALR 7'b1100111
+`define OP_LOAD 7'b0000011
+`define OP_STORE 7'b0100011
+`define OP_B_TYPE 7'b1100011
+`define OP_J_TYPE 7'b1101111
 
 `define INST_R_TYPE 4'b0001
 `define INST_I_TYPE_CALC 4'b0010

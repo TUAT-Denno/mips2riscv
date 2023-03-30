@@ -22,7 +22,8 @@
 
 module risc_v_cpu(
     input CLK,
-    input RES
+    input RES,
+    output check
 );
 
 
@@ -33,7 +34,8 @@ cpu_core core(
     .memRead(memRead),
     .memWrite(memWrite),
     .memAddr(memAddr),
-    .memDataIn(memDataIn)
+    .memDataIn(memDataIn),
+    .check(check)
 );
 
 wire memRead, memWrite;

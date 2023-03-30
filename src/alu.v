@@ -37,34 +37,34 @@ assign overflow = 1'b0;//WARNING
 
 always @(aluControl or aluIn1 or aluIn2) begin//WARNING
     case(aluControl)
-        ADD :
+        `ADD :
             aluOut <= aluIn1 + aluIn2;
             
-        SUB : 
+        `SUB : 
             aluOut <= aluIn1 - aluIn2;
             
-        SLL :
+        `SLL :
             aluOut <= aluIn1 << aluIn2;
             
-        SLT :
+        `SLT :
             aluOut <= ( $signed(aluIn1) < $signed(aluIn2) ) ? 32'h1 : 32'h0;
             
-        SLTU :
+        `SLTU :
             aluOut <= (aluIn1 < aluIn2) ? 32'h1 : 32'h0;
             
-        XOR :
+        `XOR :
             aluOut <= aluIn1 ^ aluIn2;
             
-        SRL : 
+        `SRL :
             aluOut <= aluIn1 >> aluIn2;
         
-        SRA : 
+        `SRA :
             aluOut <= aluIn1 >>> aluIn2;
             
-        OR :
+        `OR :
             aluOut <= aluIn1 | aluIn2;
             
-        AND : 
+        `AND :
             aluOut <= aluIn1 & aluIn2;
             
         default : 

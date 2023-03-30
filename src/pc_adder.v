@@ -20,11 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
+`include "define_constant.v"
+
+
 module pc_adder(
-    input [31:0] PC, imm,
+    input [31:0] PC, regA, imm,
+    input [3:0] instType,
     output [31:0] targetAddr
 );
 
 
-assign targetAddr = PC + imm;
+assign targetAddr = (instType = `INST_I_TYPE_JALR) ? regA + imm : PC + imm;
 endmodule
