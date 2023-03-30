@@ -28,10 +28,17 @@ module inst_memory(
 reg [7:0] instMem [511:0];  //命令メモリ
 
 
-assign inst = {instMem[PC], instMem[PC+1], instMem[PC+2], instMem[PC+3]};
+//assign inst = {instMem[PC], instMem[PC+1], instMem[PC+2], instMem[PC+3]};
 
 
 //デバッグ用
-assign {instMem[0], instMem[1], instMem[2], instMem[3]} = 32'b000000000001000000000000010000010011;
-assign {instMem[4], instMem[5], instMem[6], instMem[7]} = 32'b000000000010000000000000010010010011;
+assign inst = (PC == 32'h8) ? 32'b000000000001_00000_000_00001_0010011 : //addi x1,x0,1
+              (PC == 32'hc) ? 32'b000000001010_00000_000_00010_0010011 : //addi x2,x0,10
+              (PC == 32'h10) ? 32'b0000000_00000_00000_000_01000_0110011 :  //add x8,x0,x0
+              //loop
+              (PC == 32'h14) ? 32'b000000000001_01000_000_01000_0010011 :  //addi x8,x8,1
+              (PC == 32'h18) ? 32'b000000000001_00001_000_00001_0010011 :  //addi x1,x1,1
+              (PC == 32'h1c) ? 32'b1111111_00001_00010_001_10001_1100011 :  //bne x1,x2,-8
+              (PC == 32'h20) ? 32'b0000000_00000_00000_000_00000_1100011 :  //beq x0,x0,0
+              32'b0;
 endmodule

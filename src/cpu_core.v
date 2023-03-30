@@ -29,6 +29,47 @@ module cpu_core(
 );
 
 
+wire [31:0] pcNext;
+
+wire [31:0] PC;
+
+wire [31:0] inst;
+
+wire [31:0] PCWireFd;
+wire [6:0] inst31_25;
+wire [4:0] inst24_20, inst19_15;
+wire [2:0] inst14_12;
+wire [4:0] inst11_7;
+wire [6:0] inst6_0;
+wire [31:0] imm;
+
+wire [31:0] regA, regB;
+
+wire instWrite;
+wire [3:0] instType;
+wire regWrite, aluSrcA;
+wire [1:0] aluSrcB;
+wire memToReg;
+wire isFetch, isJump, isBranch;
+wire pcSrc, pcWrite;
+
+wire [3:0] aluControl;
+wire reversedZFlag;
+
+wire [31:0] aluIn1;
+
+wire [31:0] aluIn2;
+
+wire [31:0] aluOut;
+wire zeroFlag, overflow;
+
+wire [31:0] targetAddr;
+
+wire [31:0] mdrDataOut;
+
+wire [31:0] regDataIn;
+
+
 ////////FETCH////////
 pc_selector pcSelector(
     .pcPlusFour(PC + 32'h4),
@@ -36,8 +77,6 @@ pc_selector pcSelector(
     .pcSrc(pcSrc),
     .pcNext(pcNext)
 );
-
-wire [31:0] pcNext;
 
 
 program_counter programCounter(
@@ -48,15 +87,11 @@ program_counter programCounter(
     .PC(PC)
 );
 
-wire [31:0] PC;
-
 
 inst_memory instMemory(
     .PC(PC),
     .inst(inst)
 );
-
-wire [31:0] inst;
 
 
 fd_register fdRegister(
@@ -74,14 +109,6 @@ fd_register fdRegister(
     .imm(imm)
 );
 
-wire [31:0] PCWireFd;
-wire [6:0] inst31_25;
-wire [4:0] inst24_20, inst19_15;
-wire [2:0] inst14_12;
-wire [4:0] inst11_7;
-wire [6:0] inst6_0;
-wire [31:0] imm;
-
 
 ////////DECODE////////
 register_file registerFile(
@@ -96,13 +123,11 @@ register_file registerFile(
     .check(check)
 );
 
-wire [31:0] regA, regB;
-
 
 control_unit controlUnit(
     .CLK(CLK),
     .RES(RES),
-    .opcode(opcode),
+    .opcode(inst6_0),
     .overflow(overflow),
     .instWrite(instWrite), 
     .instType(instType),
@@ -117,14 +142,6 @@ control_unit controlUnit(
     .isBranch(isBranch)
 );
 
-wire instWrite;
-wire [3:0] instType;
-wire regWrite, aluSrcA;
-wire [1:0] aluSrcB;
-wire memRead, memWrite, memToReg;
-wire isFetch, isJump, isBranch;
-wire pcSrc, pcWrite;
-
 
 alu_controller aluController(
     .instType(instType),
@@ -133,9 +150,6 @@ alu_controller aluController(
     .aluControl(aluControl),
     .reversedZFlag(reversedZFlag)
 );
-
-wire [3:0] aluControl;
-wire reversedZFlag;
 
 
 assign pcSrc = ( zeroFlag ^ reversedZFlag) & isBranch | isJump;
@@ -171,8 +185,6 @@ alu_in_sel_A aluInSelA(
     .aluIn1(aluIn1)
 );
 
-wire [31:0] aluIn1;
-
 
 alu_in_sel_B aluInSelB(
     .regB(regBWireDe),
@@ -181,8 +193,6 @@ alu_in_sel_B aluInSelB(
     .aluSrcB(aluSrcB),
     .aluIn2(aluIn2)
 );
-
-wire [31:0] aluIn2;
 
 
 alu alu(
@@ -194,9 +204,6 @@ alu alu(
     .overflow(overflow)
 );
 
-wire [31:0] aluOut;
-wire zeroFlag, overflow;
-
 
 pc_adder pcAdder(
     .PC(PCWireDe),
@@ -206,11 +213,9 @@ pc_adder pcAdder(
     .targetAddr(targetAddr)
 );
 
-wire [31:0] targetAddr;
-
 
 ////////EM_REGISTER////////
-reg [31:0] aluOutRegEm, memataInRegEm;
+reg [31:0] aluOutRegEm, memDataInRegEm;
 wire [31:0] aluOutWireEm;
 
 
@@ -228,18 +233,13 @@ assign memDataIn = memDataInRegEm;  //output memDataIn
 assign memAddr = aluOutWireEm;
 
 
-mdr(
+mdr mdr(
     .CLK(CLK),
     .dataIn(memDataOut),
     .dataOut(mdrDataOut)
 );
 
-wire [31:0] mdrDataOut;
-
 
 ////////WRITEBACK////////
-wire [31:0] regDataIn;
-
-
 assign regDataIn = (memToReg == 1'b0) ? aluOutWireEm : mdrDataOut;
 endmodule

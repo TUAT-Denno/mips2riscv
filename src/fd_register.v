@@ -40,11 +40,11 @@ reg [31:0] instReg;
 always @(posedge CLK) begin
     PCRegFd <= PC;
 
-    if(instWrite == 1'b1)
+    //if(instWrite == 1'b1)
         instReg <= inst;
         
-    else begin
-    end
+    //else begin
+    //end
 end
 
 assign inst31_25 = instReg[31:25];
@@ -54,13 +54,13 @@ assign inst14_12 = instReg[14:12];
 assign inst11_7 = instReg[11:7];
 assign inst6_0 = instReg[6:0];
 
-assign imm = (instReg[6:0] == R_TYPE)                                        ? 32'h0 :
-             (instReg[6:0] == I_TYPE_CALCUTATION && instReg[13:12] == 2'b01) ? { { 28{ instReg[24] } }, instReg[23:20] } :
-             (instReg[6:0] == I_TYPE_CALCUTATION)                            ? { { 21{ instReg[31] } }, instReg[30:20] } :
-             (instReg[6:0] == I_TYPE_JALR)                                   ? { { 21{ instReg[31] } }, instReg[30:20] } :
-             (instReg[6:0] == LOAD)                                          ? { { 21{ instReg[31] } }, instReg[30:20] } :
-             (instReg[6:0] == STORE)                                         ? { { 21{ instReg[31] } }, instReg[30:25], instReg[11:7] } :
-             (instReg[6:0] == B_TYPE)                                        ? { { 20{ instReg[31] } }, instReg[7], instReg[30:25], instReg[11:8], 1'b0 } :
-             (instReg[6:0] == J_TYPE)                                        ? { { 12{ instReg[31] } }, instReg[19:12], instReg[20], instReg[30:21], 1'b0 }:
+assign imm = (instReg[6:0] == `OP_R_TYPE)                                        ? 32'h0 :
+             (instReg[6:0] == `OP_I_TYPE_CALC && instReg[13:12] == 2'b01) ? { { 28{ instReg[24] } }, instReg[23:20] } :
+             (instReg[6:0] == `OP_I_TYPE_CALC)                            ? { { 21{ instReg[31] } }, instReg[30:20] } :
+             (instReg[6:0] == `OP_I_TYPE_JALR)                                   ? { { 21{ instReg[31] } }, instReg[30:20] } :
+             (instReg[6:0] == `OP_LOAD)                                          ? { { 21{ instReg[31] } }, instReg[30:20] } :
+             (instReg[6:0] == `OP_STORE)                                         ? { { 21{ instReg[31] } }, instReg[30:25], instReg[11:7] } :
+             (instReg[6:0] == `OP_B_TYPE)                                        ? { { 20{ instReg[31] } }, instReg[7], instReg[30:25], instReg[11:8], 1'b0 } :
+             (instReg[6:0] == `OP_J_TYPE)                                        ? { { 12{ instReg[31] } }, instReg[19:12], instReg[20], instReg[30:21], 1'b0 }:
              32'h0;
 endmodule

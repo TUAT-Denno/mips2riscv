@@ -39,47 +39,47 @@ always @(instType or func3 or func7) begin//WARNING
         
             case(func3)
                 3'b000 :
-                    aluControl <= (instType == INST_R_TYPE && func7[5] == 1'b1) ? SUB : ADD;
+                    aluControl <= (instType == `INST_R_TYPE && func7[5] == 1'b1) ? `SUB : `ADD;
                 
                 3'b001 :
-                    aluControl <= SLL;
+                    aluControl <= `SLL;
                 
                 3'b010 :
-                    aluControl <= SLT;
+                    aluControl <= `SLT;
                 
                 3'b011 :
-                    aluControl <= SLTU;
+                    aluControl <= `SLTU;
                     
                 3'b100 :
-                    aluControl <= XOR;
+                    aluControl <= `XOR;
                     
                 3'b101 :
-                    aluControl <= (func7[5] == 1'b0) ? SRL : SRA;
+                    aluControl <= (func7[5] == 1'b0) ? `SRL : `SRA;
                     
                 3'b110 :
-                    aluControl <= OR;
+                    aluControl <= `OR;
                     
                 3'b111 :
-                    aluControl <= AND;
+                    aluControl <= `AND;
             endcase
         end
         
         `INST_I_TYPE_JALR, `INST_LOAD, `INST_STORE, `INST_J_TYPE : begin
             reversedZFlag <= 1'b0;
         
-            aluControl <= ADD;
+            aluControl <= `ADD;
         end
         
         `INST_B_TYPE : begin
             case(func3)
                 3'b000 : begin
                     reversedZFlag <= 1'b0;
-                    aluCon <= SUB;
+                    aluControl <= `SUB;
                 end
                 
                 3'b001 : begin
                     reversedZFlag <= 1'b1;
-                    aluCon <= SUB;
+                    aluControl <= `SUB;
                 end
                 
                 default :

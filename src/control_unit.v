@@ -23,13 +23,6 @@
 `include "define_constant.v"
 
 
-parameter FETCH = 3'b001;
-parameter DECODE = 3'b010;
-parameter EXECUTE = 3'b011;
-parameter MEM_ACCESS = 3'b100;
-parameter WRITEBACK = 3'b101;
-
-
 module control_unit(
     input CLK, RES,
     input [6:0] opcode,
@@ -41,6 +34,12 @@ module control_unit(
     output reg memRead, memWrite, memToReg,
     output reg isFetch, isJump, isBranch
 );
+
+parameter FETCH = 3'b001;
+parameter DECODE = 3'b010;
+parameter EXECUTE = 3'b011;
+parameter MEM_ACCESS = 3'b100;
+parameter WRITEBACK = 3'b101;
 
 reg [2:0] stateReg, nextState;
 
@@ -115,38 +114,38 @@ always @(stateReg or opcode) begin  //èÛë‘Ç…âûÇ∂ÇΩêMçÜÇÃêÿÇËë÷Ç¶//WARNING
         EXECUTE : begin
             case(opcode)
                 `OP_R_TYPE : begin
-                    instType <= INST_R_TYPE;
+                    instType <= `INST_R_TYPE;
                 end
                 
                 `OP_I_TYPE_CALC : begin
-                    instType <= INST_I_TYPE_CALC;
+                    instType <= `INST_I_TYPE_CALC;
                     aluSrcB <= 2'b01;
                 end
                 
                 `OP_I_TYPE_JALR : begin
-                    instType <= INST_I_TYPE_JALR;
+                    instType <= `INST_I_TYPE_JALR;
                     aluSrcA <= 1'b1;
                     aluSrcB <= 2'b10;
                     isJump <= 1'b1;
                 end
                 
                 `OP_LOAD : begin
-                    instType <= INST_LOAD;
+                    instType <= `INST_LOAD;
                     aluSrcB <= 2'b01;
                 end
                 
                 `OP_STORE : begin
-                    instType <= INST_STORE;
+                    instType <= `INST_STORE;
                     aluSrcB <= 2'b01;
                 end
                 
                 `OP_B_TYPE : begin
-                    instType <= INST_B_TYPE;
+                    instType <= `INST_B_TYPE;
                     isBranch <= 1'b1;
                 end
                 
                 `OP_J_TYPE : begin
-                    instType <= INST_J_TYPE;
+                    instType <= `INST_J_TYPE;
                     aluSrcA <= 1'b1;
                     aluSrcB <= 2'b10;
                     isJump <= 1'b1;

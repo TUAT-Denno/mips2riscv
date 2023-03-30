@@ -23,8 +23,14 @@
 module risc_v_cpu(
     input CLK,
     input RES,
-    output check
+    output [31:0] check
 );
+
+
+wire memRead, memWrite;
+wire [31:0] memAddr, memDataIn;
+
+wire [31:0] memDataOut;
 
 
 cpu_core core(
@@ -38,9 +44,6 @@ cpu_core core(
     .check(check)
 );
 
-wire memRead, memWrite;
-wire [31:0] memAddr, memDataIn;
-
 
 memory memory(
     .CLK(CLK),
@@ -50,6 +53,4 @@ memory memory(
     .dataIn(memDataIn),
     .dataOut(memDataOut)
 );
-
-wire [31:0] memDataOut;
 endmodule

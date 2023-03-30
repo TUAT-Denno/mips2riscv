@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2023/03/24 18:38:39
+// Create Date: 2023/03/30 16:25:30
 // Design Name: 
-// Module Name: pc_adder
+// Module Name: cpuTest
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,15 +20,32 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-`include "define_constant.v"
+module cpuTest();
+
+parameter CLK_PERIOD = 10;
+
+reg CLK, RES;
+wire [31:0] check;
 
 
-module pc_adder(
-    input [31:0] PC, regA, imm,
-    input [3:0] instType,
-    output [31:0] targetAddr
+risc_v_cpu cpu(
+    .CLK(CLK),
+    .RES(RES),
+    .check(check)
 );
 
 
-assign targetAddr = (instType == `INST_I_TYPE_JALR) ? regA + imm : PC + imm;
+initial begin
+    CLK <= 1'b0;
+    RES <= 1'b1;
+end
+
+always begin
+    #CLK_PERIOD CLK <= ~CLK;
+end
+
+always begin
+    #10000 RES <= 1'b0;
+    #10000 $finish;
+end
 endmodule
