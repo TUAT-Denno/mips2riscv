@@ -174,7 +174,6 @@ wire [31:0] aluIn1;
 alu_in_sel_B aluInSelB(
     .regB(regBWireDe),
     .imm(immWireDe),
-    .shamt( { { 28{ immWireDe[4] } }, immWireDe[3:0] } ),
     .four(32'h4),
     .aluSrcB(aluSrcB),
     .aluIn2(aluIn2)
@@ -228,31 +227,21 @@ assign memDataIn = memDataInRegEm;  //output memDataIn
 assign memAddr = aluOutWireEm;
 
 
-////////MW_REGISTER////////
-reg [31:0] PCRegMw;
-reg [31:0] aluOutRegMw, memDataOutRegMw;
-wire [31:0] PCWireMw;
-wire [31:0] aluOutWireMw, memDataOutWireMw;
+mdr(
+    .CLK(CLK),
+    .dataIn(memDataOut),
+    .dataOut(mdrDataOut)
+);
 
-
-always @(posedge CLK) begin
-    PCRegMw <= PCWireEm;
-    aluOutRegMw <= aluOutWireEm;
-    memDataOutRegMw <= memDataOut;
-end
-
-assign PCWireMw = PCRegMw;
-assign aluOutWireMw = aluOutRegMw;
-assign memDataOutWireMw = memDataOutRegMw;
-///////////////////////////
+wire [31:0] mdrDataOut;
 
 
 ////////WRITEBACK////////
 wire [31:0] regDataIn;
 
 
-assign regDataIn = (memToReg == 2'b00) ? aluOutWireMw :
-                   (memToReg == 2'b01) ? memDataOutWireMw :
-                   (memToReg == 2'b10) ? PCWireMw :
+assign regDataIn = (memToReg == 2'b00) ? aluOutWireEm :
+                   (memToReg == 2'b01) ? mdrDataOut :
+                   (memToReg == 2'b10) ? PCWireEm :
                    32'h0;
 endmodule

@@ -63,6 +63,9 @@ always @(stateReg or opcode) begin  //èÛë‘ëJà⁄
             
         EXECUTE : begin
             case(opcode)
+                OP_R_TYPE, OP_I_TYPE_CALC, OP_I_TYPE_JALR :
+                    nextState <= WRITEBACK;
+            
                 OP_B_TYPE, OP_J_TYPE :
                     nextState <= FETCH;
                     
@@ -118,12 +121,13 @@ always @(stateReg or opcode) begin  //èÛë‘Ç…âûÇ∂ÇΩêMçÜÇÃêÿÇËë÷Ç¶//WARNING
                 
                 OP_I_TYPE_CALC : begin
                     instType <= INST_I_TYPE_CALC;
+                    aluSrcB <= 2'b01;
                 end
                 
                 OP_I_TYPE_JALR : begin
                     instType <= INST_I_TYPE_JALR;
                     aluSrcA <= 1'b1;
-                    aluSrcB <= 1'b11;
+                    aluSrcB <= 2'b10;
                 end
                 
                 OP_LOAD : begin

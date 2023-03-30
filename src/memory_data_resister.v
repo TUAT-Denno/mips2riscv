@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2023/03/24 17:02:35
+// Create Date: 2023/03/30 12:45:10
 // Design Name: 
-// Module Name: alu_in_sel_B
+// Module Name: memory_data_resister
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,15 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module alu_in_sel_B(
-    input [31:0] regB, imm, four,
-    input [1:0] aluSrcB,
-    output [31:0] aluIn2
+module mdr(
+    input CLK,
+    input [31:0] dataIn,
+    output reg [31:0] dataOut
 );
 
 
-assign aluIn2 = (aluSrcB == 2'b00) ? regB :
-                (aluSrcB == 2'b01) ? imm :
-                (aluSrcB == 2'b10) ? four :
-                32'h0;
+always @(posedge CLK)
+    dataOut <= dataIn;
 endmodule
