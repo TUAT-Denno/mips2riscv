@@ -62,30 +62,22 @@ pcSRC　← isJump +（論理和） Branch成功
 .
 ├── README.md
 ├── img
-│   └── cpu_project_structure.png
+│   ├── cpu_project_structure.png
+│   └── state_trans.png
 └── src
-    ├── PC_selecter.v
     ├── alu.v
     ├── alu_controller.v
-    ├── alu_in1_selector.v
-    ├── alu_in2_selector.v
     ├── alu_in_sel_A.v
     ├── alu_in_sel_B.v
     ├── control_unit.v
-    ├── cpu.v
-    ├── cpu_ALU.v
-    ├── cpu_ALUController.v
     ├── cpu_core.v
-    ├── cpu_reg.v
-    ├── cpu_src.v
     ├── define_constant.v
     ├── fd_register.v
-    ├── immediate_generator.v
     ├── inst_memory.v
     ├── instruction_distributor.v
     ├── memory.v
+    ├── memory_data_resister.v
     ├── pc_adder.v
-    ├── pc_sel.v
     ├── pc_selector.v
     ├── program_counter.v
     ├── register_file.v
