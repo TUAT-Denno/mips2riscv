@@ -32,10 +32,13 @@ always @(posedge CLK) begin
     if(RES == 1'b1)  //リセット時、PCを0にリセット
         PC <= 32'h0;
         
-    else if(pcWrite == 1'b1)  //PCを変更
-        PC <= pcNext;
+    //else if(pcWrite == 1'b1)  //PCを変更
+        //PC <= pcNext;
         
     else  //PCを維持
         PC <= PC;
 end
+
+always @(posedge pcWrite) 
+    PC <= pcNext;
 endmodule
