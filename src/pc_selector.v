@@ -22,10 +22,11 @@
 
 module pc_selector(
     input [31:0] pcPlusFour, targetAddr,  //pcPlusFour: PC + 4, targetAddr: BranchÇ‹ÇΩÇÕJumpêÊÇÃÉAÉhÉåÉX
+    input pcWrite,
     input pcSrc,  //pcSrc: 0: pcPlusFour, 1:targetAddr
     output [31:0] pcNext
 );
 
 
-assign pcNext = (pcSrc == 1'b0) ? pcPlusFour : targetAddr;
+assign pcNext = (pcSrc == 1'b0) ? pcPlusFourReg : targetAddr;
 endmodule

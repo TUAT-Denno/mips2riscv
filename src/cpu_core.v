@@ -71,19 +71,21 @@ wire [31:0] regDataIn;
 
 
 ////////FETCH////////
-pc_selector pcSelector(
-    .pcPlusFour(PC + 32'h4),
-    .targetAddr(targetAddr),
-    .pcSrc(pcSrc),
-    .pcNext(pcNext)
-);
+//pc_selector pcSelector(
+//    .pcPlusFour(PC + 32'h4),
+//    .targetAddr(targetAddr),
+//    .pcWrite(pcWrite),
+//    .pcSrc(pcSrc),
+//    .pcNext(pcNext)
+//);
 
 
 program_counter programCounter(
     .CLK(CLK),
     .RES(RES),
-    .pcNext(pcNext),
+    .targetAddr(targetAddr),
     .pcWrite(pcWrite),
+    .pcSrc(pcSrc),
     .PC(PC)
 );
 

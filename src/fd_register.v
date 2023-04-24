@@ -40,11 +40,8 @@ reg [31:0] instReg;
 always @(posedge CLK) begin
     PCRegFd <= PC;
 
-    //if(instWrite == 1'b1)
+    if(instWrite == 1'b1)
         instReg <= inst;
-        
-    //else begin
-    //end
 end
 
 assign inst31_25 = instReg[31:25];

@@ -22,12 +22,31 @@
 
 module program_counter(
     input CLK, RES,
-    input [31:0] pcNext,  //次のPC
+    input [31:0] targetAddr,
     input pcWrite,  //pcWrite: 1の場合にPCをpcNextで上書き
+    input pcSrc,
     output reg [31:0] PC
 );
 
+reg [31:0] pcPlusFour;
+wire [31:0] pcNext;
 
+
+//PC_SELECTOR
+always @(posedge CLK) begin
+    if(RES == 1'b1)
+        pcPlusFour <= 32'h0;
+end
+
+always @(negedge CLK) begin
+    if(pcWrite == 1'b1)
+        pcPlusFour <= PC + 32'h4;
+end
+
+assign pcNext = (pcSrc == 1'b0) ? pcPlusFour : targetAddr;
+
+
+//PC
 always @(posedge CLK) begin
     if(RES == 1'b1)  //リセット時、PCを0にリセット
         PC <= 32'h0;
